@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evergreen</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Navar -->
+    <nav class="navbar navbar-expand-lg bg-success">
+      <div class="container">
+        <a class="navbar-brand text-light" href="/">Evergreen-CON</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item pe-3">
+              <a
+                class="nav-link active text-light"
+                aria-current="page"
+                href="/applications"
+                >Applications</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active text-light" href="/devices"
+                >Devices</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End of Navbar -->
+
+    <div class="container mt-3">
+      <h2>List Applications</h2>
+      <hr />
+      <a href="/applications/add" class="btn btn-secondary">Add Application</a>
+      <table class="table table-bordered mt-2 text-center">
+        <thead>
+          <tr>
+            <th>Identifier</th>
+            <th>Name</th>
+            <th>Port</th>
+            <th>Status</th>
+            <th>Type</th>
+            <th>Language</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .applications}}
+          <tr>
+            <td>{{.Identifier}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Port}}</td>
+            <td>{{.Status}}</td>
+            <td>{{.Type}}</td>
+            <td>{{.Language}}</td>
+            <td>
+              <a
+                href="/applications/detail?id={{.Id}}"
+                class="btn btn-sm btn-dark text-light"
+                >Detail</a
+              >
+              <a
+                href="/applications/edit?id={{.Id}}"
+                class="btn btn-sm btn-warning text-light"
+                >Edit</a
+              >
+              <a
+                href="/applications/delete?id={{.Id}}"
+                onclick="return confirm('Are you sure want to delete this application ?')"
+                class="btn btn-sm btn-danger"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-success text-light text-center py-3 mt-5 fixed-bottom">
+      <div class="container">
+          &copy; 2023 Evergreen-CON
+      </div>
+    </footer>
+  </body>
+</html>
