@@ -9,16 +9,17 @@ func GetAll() []entities.Device {
 
 	//rows, err := config.DB.Query("SELECT * FROM devices")
 	rows, err := config.DB.Query(`
-		SELECT 
+		SELECT
 		    devices.id,
 		    devices.name,
-		    devices.location,
+			locations.identifier as location_identifier,
 		    devices.parameters,
 		    device_types.name as device_type_name,
 		    devices.model,
 		    devices.created_at,
 		    devices.updated_at FROM devices
 		JOIN device_types ON devices.type_id = device_types.id
+		JOIN locations ON devices.location_id = locations.id;
 	`)
 	if err != nil {
 		panic(err)
@@ -33,7 +34,7 @@ func GetAll() []entities.Device {
 		if err := rows.Scan(
 			&device.Id,
 			&device.Name,
-			&device.Location,
+			&device.Location.Identifier,
 			&device.Parameters,
 			&device.Type.Name,
 			&device.Model,
@@ -51,10 +52,10 @@ func GetAll() []entities.Device {
 
 func Create(device entities.Device) bool {
 	result, err := config.DB.Exec(`
-		INSERT INTO devices (name, location, parameters, type_id, model, created_at, updated_at) 
+		INSERT INTO devices (name, location_id, parameters, type_id, model, created_at, updated_at) 
 		VALUE (?, ?, ?, ?, ?, ?, ?)`,
 		device.Name,
-		device.Location,
+		device.Location.Id,
 		device.Parameters,
 		device.Type.Id,
 		device.Model,
@@ -77,24 +78,39 @@ func Create(device entities.Device) bool {
 func Detail(id int) entities.Device {
 	//row := config.DB.QueryRow(`SELECT id, name, location, parameters, type_id, model FROM devices WHERE id = ? `, id)
 
+	// row := config.DB.QueryRow(`
+	// 	SELECT
+	// 		devices.id,
+	// 		devices.name,
+	// 		devices.location_id,
+	// 		devices.parameters,
+	// 		device_types.name as device_type_name,
+	// 		devices.model,
+	// 		devices.created_at,
+	// 		devices.updated_at FROM devices
+	// 	JOIN device_types ON devices.type_id = device_types.id
+	// 	WHERE devices.id = ?
+	// `, id)
+
 	row := config.DB.QueryRow(`
-		SELECT 
+		SELECT
 			devices.id,
 			devices.name,
-			devices.location,
+			locations.identifier as location_identifier,
 			devices.parameters,
 			device_types.name as device_type_name,
 			devices.model,
 			devices.created_at,
 			devices.updated_at FROM devices
 		JOIN device_types ON devices.type_id = device_types.id
+		JOIN locations ON devices.location_id = locations.id
 		WHERE devices.id = ?
-	`, id)
+	 `, id)
 
 	var device entities.Device
 
 	if err := row.Scan(
-		&device.Id, &device.Name, &device.Location, &device.Parameters, &device.Type.Name, &device.Model, &device.CreatedAt, &device.UpdatedAt); err != nil {
+		&device.Id, &device.Name, &device.Location.Identifier, &device.Parameters, &device.Type.Name, &device.Model, &device.CreatedAt, &device.UpdatedAt); err != nil {
 		panic(err.Error())
 	}
 
@@ -106,14 +122,14 @@ func Update(id int, device entities.Device) bool {
 	query, err := config.DB.Exec(`
 		UPDATE devices SET 
 			name = ?,
-			location = ?,
+			location_id = ?,
 			parameters = ?,
 			type_id = ?,
 			model = ?,
 			updated_at = ? 
 		WHERE id = ?`,
 		device.Name,
-		device.Location,
+		device.Location.Id,
 		device.Parameters,
 		device.Type.Id,
 		device.Model,

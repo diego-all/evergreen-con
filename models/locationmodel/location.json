@@ -1,0 +1,82 @@
+{
+    "proyectos": [
+      {
+        "nombre": "Proyecto Hortalizas",
+        "ubicacion": "El Retiro",
+        "descripcion": "Hortalizas del Retiro",
+        "parcelas": [
+          {
+            "nombre": "Parcela A",
+            "area": 10.5,
+            "predios": [
+              {
+                "nombre": "Predio 1",
+                "cultivo": "Cultivo Cebollas",
+                "superficie": 5.0
+              },
+              {
+                "nombre": "Predio 2",
+                "cultivo": "Cultivo Zanahorias",
+                "superficie": 5.5
+              }
+            ]
+          },
+          {
+            "nombre": "Parcela B",
+            "area": 8.2,
+            "predios": [
+              {
+                "nombre": "Predio 3",
+                "cultivo": "Cultivo Rabanos",
+                "superficie": 4.0
+              },
+              {
+                "nombre": "Predio 4",
+                "cultivo": "Cultivo Pimenton",
+                "superficie": 4.2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "Proyecto Frutas",
+        "ubicacion": "Rionegro",
+        "descripcion": "Frutas y Verduras de Oriente",
+        "parcelas": [
+          {
+            "nombre": "Parcela C",
+            "area": 12.3,
+            "predios": [
+              {
+                "nombre": "Predio 5",
+                "cultivo": "Cultivo Frambuesas",
+                "superficie": 6.0
+              },
+              {
+                "nombre": "Predio 6",
+                "cultivo": "Cultivo Moras",
+                "superficie": 6.3
+              }
+            ]
+          },
+          {
+            "nombre": "Parcela D",
+            "area": 9.7,
+            "predios": [
+              {
+                "nombre": "Predio 7",
+                "cultivo": "Cultivo Aguacates",
+                "superficie": 4.5
+              },
+              {
+                "nombre": "Predio 8",
+                "cultivo": "Cultivo Tomates",
+                "superficie": 5.2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

@@ -12,19 +12,33 @@ CREATE TABLE device_types (
     updated_at timestamp NOT NULL
 );
 
+DROP TABLE IF EXISTS locations;
+
+CREATE TABLE locations (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    identifier varchar(50) NOT NULL,
+    name varchar(100) NOT NULL,
+    project varchar(100) NOT NULL,
+    plot varchar(100) NOT NULL,
+    property varchar(100) NOT NULL,
+    created_at timestamp NOT NULL,
+    updated_at timestamp NOT NULL
+);
+
 
 DROP TABLE IF EXISTS devices;
 
 CREATE TABLE devices (
     id int AUTO_INCREMENT PRIMARY KEY,
     name varchar(100) NOT NULL,
-    location varchar(100) NOT NULL,
+    location_id int,
     parameters varchar(255),
     type_id int,
     model varchar(50),
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
-    FOREIGN KEY (type_id) REFERENCES device_types(id)
+    FOREIGN KEY (type_id) REFERENCES device_types(id),
+    FOREIGN KEY (location_id) REFERENCES locations(id)
 );
 
 
@@ -38,8 +52,10 @@ CREATE TABLE applications (
     status varchar(50),
     type varchar(50),
     language varchar(50),
+    device_id int,
     created_at timestamp NOT NULL,
-    updated_at timestamp NOT NULL
+    updated_at timestamp NOT NULL,
+    FOREIGN KEY (device_id) REFERENCES devices(id)
 );
 
 
@@ -50,6 +66,3 @@ INSERT INTO device_types (name, created_at, updated_at) VALUES
 ('weather station', NOW(), NOW()),
 ('drone', NOW(), NOW()),
 ('monitor', NOW(), NOW());
-
-
-

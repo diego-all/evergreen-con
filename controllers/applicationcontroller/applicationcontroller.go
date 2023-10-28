@@ -3,6 +3,7 @@ package applicationcontroller
 import (
 	"evergreen-con/entities"
 	"evergreen-con/models/applicationmodel"
+	"evergreen-con/models/devicemodel"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -29,21 +30,31 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
+		devices := devicemodel.GetAll()
+		data := map[string]any{
+			"devices": devices,
+		}
 
-		//temp.Execute(w, data)
-		temp.Execute(w, nil)
+		temp.Execute(w, data)
 
 	}
 
 	if r.Method == "POST" {
 		var application entities.Application
 
+		deviceId, err := strconv.Atoi(r.FormValue("device_id"))
+		if err != nil {
+			panic(err)
+		}
+
+		//device.Type.Id = uint(deviceTypeId)
 		application.Identifier = r.FormValue("identifier")
 		application.Name = r.FormValue("name")
 		application.Port = r.FormValue("port")
 		application.Status = r.FormValue("status")
 		application.Type = r.FormValue("type")
 		application.Language = r.FormValue("language")
+		application.Device.Id = deviceId
 		application.CreatedAt = time.Now()
 		application.UpdatedAt = time.Now()
 
@@ -91,9 +102,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		application := applicationmodel.Detail(id)
-
+		devices := devicemodel.GetAll()
 		data := map[string]any{
 			"application": application,
+			"devices":     devices,
 		}
 
 		temp.Execute(w, data)
@@ -108,12 +120,18 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
+		deviceId, err := strconv.Atoi(r.FormValue("device_id"))
+		if err != nil {
+			panic(err)
+		}
+
 		application.Identifier = r.FormValue("identifier")
 		application.Name = r.FormValue("name")
 		application.Port = r.FormValue("port")
 		application.Status = r.FormValue("status")
 		application.Type = r.FormValue("type")
 		application.Language = r.FormValue("language")
+		application.Device.Id = deviceId
 		application.UpdatedAt = time.Now()
 
 		if ok := applicationmodel.Update(id, application); !ok {

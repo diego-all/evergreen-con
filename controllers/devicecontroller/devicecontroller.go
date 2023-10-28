@@ -4,6 +4,7 @@ import (
 	"evergreen-con/entities"
 	"evergreen-con/models/deviceTypemodel"
 	"evergreen-con/models/devicemodel"
+	"evergreen-con/models/locationmodel"
 	"strconv"
 	"time"
 
@@ -32,8 +33,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
+		locations := locationmodel.Getall()
 		deviceTypes := deviceTypemodel.GetAll()
 		data := map[string]any{
+			"locations":   locations,
 			"deviceTypes": deviceTypes,
 		}
 
@@ -43,13 +46,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		var device entities.Device
 
+		locationId, err := strconv.Atoi(r.FormValue("location_id"))
+		if err != nil {
+			panic(err)
+		}
+
 		deviceTypeId, err := strconv.Atoi(r.FormValue("device_types_id"))
 		if err != nil {
 			panic(err)
 		}
 
 		device.Name = r.FormValue("name")
-		device.Location = r.FormValue("location")
+		//device.Location = r.FormValue("location")
+		device.Location.Id = uint(locationId)
 		device.Parameters = r.FormValue("parameters")
 		device.Type.Id = uint(deviceTypeId)
 		device.Model = r.FormValue("model")
@@ -102,10 +111,12 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		device := devicemodel.Detail(id)
+		locations := locationmodel.Getall()
 		deviceTypes := deviceTypemodel.GetAll()
 		data := map[string]any{
 			"device":      device,
 			"deviceTypes": deviceTypes,
+			"locations":   locations,
 		}
 
 		temp.Execute(w, data)
@@ -120,13 +131,19 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
+		locationId, err := strconv.Atoi(r.FormValue("location_id"))
+		if err != nil {
+			panic(err)
+		}
+
 		deviceTypeId, err := strconv.Atoi(r.FormValue("device_types_id"))
 		if err != nil {
 			panic(err)
 		}
 
 		device.Name = r.FormValue("name")
-		device.Location = r.FormValue("location")
+		//device.Location = r.FormValue("location")
+		device.Location.Id = uint(locationId)
 		device.Parameters = r.FormValue("parameters")
 		//device.Type = r.FormValue("type")
 		// falta terminarlo como con Add

@@ -6,9 +6,21 @@ import (
 )
 
 func Getall() []entities.Application {
-
-	rows, err := config.DB.Query("SELECT * FROM applications")
-
+	//rows, err := config.DB.Query("SELECT * FROM applications")
+	rows, err := config.DB.Query(`
+		SELECT
+		    applications.id,
+		    applications.identifier,
+		    applications.name,
+		    applications.port,
+			applications.status,
+			applications.type,
+			applications.language,
+		    devices.name as device_name,
+			applications.created_at,
+			applications.updated_at FROM applications
+		JOIN devices ON applications.device_id = devices.id;
+	`)
 	if err != nil {
 		panic(err)
 	}
@@ -27,6 +39,7 @@ func Getall() []entities.Application {
 			&application.Status,
 			&application.Type,
 			&application.Language,
+			&application.Device.Name,
 			&application.CreatedAt,
 			&application.UpdatedAt,
 		); err != nil {
@@ -42,14 +55,15 @@ func Getall() []entities.Application {
 func Create(applications entities.Application) bool {
 	result, err := config.DB.Exec(`
 		INSERT INTO applications(
-			identifier, name, port, status, type, language, created_at, updated_at
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			identifier, name, port, status, type, language, device_id, created_at, updated_at
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		applications.Identifier,
 		applications.Name,
 		applications.Port,
 		applications.Status,
 		applications.Type,
 		applications.Language,
+		applications.Device.Id,
 		applications.CreatedAt,
 		applications.UpdatedAt,
 	)
@@ -68,11 +82,26 @@ func Create(applications entities.Application) bool {
 
 func Detail(id int) entities.Application {
 
-	row := config.DB.QueryRow(`SELECT id, identifier, name, port, status, type, language, created_at,updated_at FROM applications WHERE id = ? `, id)
+	//row := config.DB.QueryRow(`SELECT id, identifier, name, port, status, type, language, device_id, created_at, updated_at FROM applications WHERE id = ? `, id)
+	row := config.DB.QueryRow(`
+		SELECT
+		    applications.id,
+		    applications.identifier,
+		    applications.name,
+		    applications.port,
+			applications.status,
+			applications.type,
+			applications.language,
+		    devices.name as device_name,
+			applications.created_at,
+			applications.updated_at FROM applications
+		JOIN devices ON applications.device_id = devices.id
+		WHERE applications.id = ?
+	`, id)
 
 	var application entities.Application
 
-	err := row.Scan(
+	if err := row.Scan(
 		&application.Id,
 		&application.Identifier,
 		&application.Name,
@@ -80,13 +109,10 @@ func Detail(id int) entities.Application {
 		&application.Status,
 		&application.Type,
 		&application.Language,
+		&application.Device.Name,
 		&application.CreatedAt,
-		&application.UpdatedAt,
-	)
-
-	if err != nil {
-		panic(err)
-		// panic(err.Error())
+		&application.UpdatedAt); err != nil {
+		panic(err.Error())
 	}
 
 	return application
@@ -101,6 +127,7 @@ func Update(id int, application entities.Application) bool {
 			status = ?,
 			type = ?,
 			language = ?,
+			device_id = ?,
 			updated_at = ?
 		WHERE id = ?`,
 		application.Identifier,
@@ -109,6 +136,7 @@ func Update(id int, application entities.Application) bool {
 		application.Status,
 		application.Type,
 		application.Language,
+		application.Device.Id,
 		application.UpdatedAt,
 		id,
 	)

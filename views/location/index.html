@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Evergreen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -62,69 +61,119 @@
             <li><a class="dropdown-item text-light" href="/configurations/status" id="status-button">Status</a></li>
           </ul>
         </li>
-
       </ul>
 
       <button id="darkModeButton" class="btn btn-secondary ms-auto" type="button">
         <i id="darkModeIcon" class="bi bi-moon"></i>
       </button>
-
     </div>
   </div>
 </nav>
 
-    <!-- End of Navbar -->
+    <!-- <form action="/locations/sync" method="post" id="sync-form">
+      <button type="submit" class="btn btn-primary">Sync Locations</button>
+    </form>
+    
+    <div id="message-container" style="display: none;">
+      <p id="sync-message"></p>
+    </div> -->
 
     <div class="container mt-3">
-      <h2>List Applications</h2>
+      <h2>List Locations</h2>
       <hr />
-      <a href="/applications/add" class="btn btn-secondary">Add Application</a>
+      <a href="/locations/sync" class="btn btn-secondary" id="sync-button">Sync Locations</a>
+      <!-- <a href="/locations/reset" class="btn btn-primary" id="reset-button">Reset Locations</a> -->
+
+      <!-- <a href="/locations/sync" class="btn btn-secondary">Sync Locations</a> -->
       <table class="table table-bordered mt-2 text-center">
         <thead>
           <tr>
             <th>Identifier</th>
             <th>Name</th>
-            <th>Port</th>
-            <th>Status</th>
-            <th>Type</th>
-            <th>Language</th>
-            <th>Device</th>
-            <th>Action</th>
+            <th>Project</th>
+            <th>Plot</th>
+            <th>Property</th>
           </tr>
         </thead>
         <tbody>
-          {{range .applications}}
+          {{range .locations}}
           <tr>
             <td>{{.Identifier}}</td>
             <td>{{.Name}}</td>
-            <td>{{.Port}}</td>
-            <td>{{.Status}}</td>
-            <td>{{.Type}}</td>
-            <td>{{.Language}}</td>
-            <td>{{.Device.Name}}</td>
-            <td>
-              <a
-                href="/applications/detail?id={{.Id}}"
-                class="btn btn-sm btn-dark text-light"
-                >Detail</a
-              >
-              <a
-                href="/applications/edit?id={{.Id}}"
-                class="btn btn-sm btn-warning text-light"
-                >Edit</a
-              >
-              <a
-                href="/applications/delete?id={{.Id}}"
-                onclick="return confirm('Are you sure want to delete this application ?')"
-                class="btn btn-sm btn-danger"
-                >Delete</a
-              >
-            </td>
+            <td>{{.Project}}</td>
+            <td>{{.Plot}}</td>
+            <td>{{.Property}}</td>
           </tr>
           {{end}}
         </tbody>
       </table>
     </div>
+    <hr>
+    
+    <!-- <script>
+      document.getElementById("sync-form").addEventListener("submit", function(e) {
+        e.preventDefault(); // Evitar el envío del formulario normal
+    
+        fetch("http://localhost:9090/locations/sync")
+          .then(response => response.text())
+          .then(data => {
+            // Mostrar el mensaje al usuario
+            document.getElementById("sync-message").innerText = data;
+            document.getElementById("message-container").style.display = "block";
+          });
+      });
+    </script> -->
+
+    <!-- <script>
+      document.getElementById("sync-button").addEventListener("click", function(e) {
+        e.preventDefault(); // Prevenir la navegación predeterminada
+    
+        fetch("/locations/sync")
+          .then(response => response.text())
+          .then(data => {
+            // Mostrar el mensaje al usuario
+            alert(data); // O puedes mostrar el mensaje de otra manera
+            // Redirigir al usuario a /locations
+            window.location.href = "/locations";
+          });
+      });
+    </script> -->
+
+
+    <script>
+      function syncLocations() {
+        fetch("/locations/sync")
+          .then(response => response.text())
+          .then(data => {
+            // Mostrar el mensaje al usuario
+            alert(data); // O puedes mostrar el mensaje de otra manera
+            // Redirigir al usuario a /locations
+            window.location.href = "/locations";
+          });
+      }
+    
+      // function resetLocations() {
+      //   fetch("/locations/reset", { method: "POST" })
+      //     .then(response => response.text())
+      //     .then(data => {
+      //       // Mostrar el mensaje al usuario
+      //       alert(data); // O puedes mostrar el mensaje de otra manera
+      //       // Redirigir al usuario a /locations
+      //       window.location.href = "/locations";
+      //     });
+      // }
+    
+      document.getElementById("sync-button").addEventListener("click", function(e) {
+        e.preventDefault();
+        syncLocations();
+      });
+    
+      // document.getElementById("reset-button").addEventListener("click", function(e) {
+      //   e.preventDefault();
+      //   resetLocations();
+      // });
+    </script>
+    
     <!-- Footer -->
     <footer class="bg-success text-light text-center py-3 mt-5 fixed-bottom">
       <div class="container">
@@ -207,7 +256,6 @@
     status();
   });
 </script>
-
 
   </body>
 </html>

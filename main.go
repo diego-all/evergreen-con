@@ -5,6 +5,8 @@ import (
 	"evergreen-con/controllers/applicationcontroller"
 	"evergreen-con/controllers/devicecontroller"
 	"evergreen-con/controllers/homecontroller"
+	"evergreen-con/controllers/locationcontroller"
+	"evergreen-con/production"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,8 +28,47 @@ func main() {
 	// 	Database connection
 	config.ConnectDatabase(dsn)
 
+	//config.QueryApps(config.DB)
+	//production.ReadJSONmock()
+
+	http.HandleFunc("/locations/sync", func(w http.ResponseWriter, r *http.Request) {
+		// Ejecuta la función de sincronización.
+		production.ReadJSONmock()
+
+		// Devuelve una respuesta al usuario.
+		message := "Synchronization was successful."
+		fmt.Fprintf(w, message)
+	})
+
+	// http.HandleFunc("/locations/reset", func(w http.ResponseWriter, r *http.Request) {
+	// 	// Ejecuta la función de sincronización.
+	// 	production.ResetLocation()
+
+	// 	// Devuelve una respuesta al usuario.
+	// 	message := "The locations was successfully cleared."
+	// 	fmt.Fprintf(w, message)
+	// })
+
+	http.HandleFunc("/configurations/backup", func(w http.ResponseWriter, r *http.Request) {
+		// Ejecuta la función de sincronización.
+		production.BackupDatabase()
+
+		// Devuelve una respuesta al usuario.
+		message := "Backup Completed Successfully."
+		fmt.Fprintf(w, message)
+	})
+
+	http.HandleFunc("/configurations/status", func(w http.ResponseWriter, r *http.Request) {
+		// Ejecuta la función de sincronización.
+
+		// Devuelve una respuesta al usuario.
+		message := "Backup Completed Successfully."
+		fmt.Fprintf(w, message)
+	})
+
 	// 1.Home
 	http.HandleFunc("/", homecontroller.Home)
+	http.HandleFunc("/controls", homecontroller.Controls)
 
 	// 2. Devices
 	http.HandleFunc("/devices/add", devicecontroller.Create)
@@ -42,6 +83,9 @@ func main() {
 	http.HandleFunc("/applications/edit", applicationcontroller.Update)
 	http.HandleFunc("/applications", applicationcontroller.List)
 	http.HandleFunc("/applications/delete", applicationcontroller.Delete)
+
+	// 4. Locations
+	http.HandleFunc("/locations", locationcontroller.List)
 
 	// Run server
 	log.Println("Server running on port: 9090")

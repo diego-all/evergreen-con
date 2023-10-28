@@ -57,3 +57,7 @@
         Requiero que generes los controllers para estas vistas y retornar al cliente la plantilla a renderizar con la data correspondiente.
 
 
+
+10. Generar mock para emular consulta a microservicio de producción.
+
+        Tengo 3 entidades de dominio, proyecto , parcela y predio. Un proyecto de produccion tiene parcelas y las parcelas tienen predios.Podrias generarme un JSON para un mock que considere este escenario
